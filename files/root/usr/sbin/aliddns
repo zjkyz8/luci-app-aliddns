@@ -28,6 +28,10 @@ intelnetip() {
 	fi
 	echo -n $tmp_ip
 }
+intelnetip6() {
+	tmp_ip6=`curl -sL --connect-timeout 3   v6.ident.me`
+	echo -n $tmp_ip
+}
 
 resolve2ip() {
 	# resolve2ip domain<string>
@@ -93,11 +97,11 @@ query_recordid() {
 }
 
 update_record() {
-	send_request "UpdateDomainRecord" "RR=$sub_dm&RecordId=$1&SignatureMethod=HMAC-SHA1&SignatureNonce=$timestamp&SignatureVersion=1.0&Timestamp=$timestamp&Type=A&Value=$ip"
+	send_request "UpdateDomainRecord" "RR=$sub_dm&RecordId=$1&SignatureMethod=HMAC-SHA1&SignatureNonce=$timestamp&SignatureVersion=1.0&Timestamp=$timestamp&Type=$type&Value=`urlencode $ip`"
 }
 
 add_record() {
-	send_request "AddDomainRecord&DomainName=$main_dm" "RR=$sub_dm&SignatureMethod=HMAC-SHA1&SignatureNonce=$timestamp&SignatureVersion=1.0&Timestamp=$timestamp&Type=A&Value=$ip"
+	send_request "AddDomainRecord&DomainName=$main_dm" "RR=$sub_dm&SignatureMethod=HMAC-SHA1&SignatureNonce=$timestamp&SignatureVersion=1.0&Timestamp=$timestamp&Type=$type&Value=`urlencode $ip`"
 }
 
 del_record() {
@@ -151,8 +155,15 @@ main_dm=$(uci_get_by_name base main_domain)
 sub_dm=$(uci_get_by_name  base sub_domain)
 
 iface=$(uci_get_by_name   base interface)
+protocol=$(uci_get_by_name  base protocol)
 if [ "Z$iface" == "Zinternet" -o "Z$iface" == "Z" ]; then
-	ip=$(intelnetip)
+	if [ "Z$protocol" == "ZIPv6" ]; then
+		ip=$(intelnetip6)
+		type='AAAA'
+	else
+		ip=$(intelnetip)
+		type='A'
+	fi
 else
 	ip=$(ubus call network.interface.$iface status | grep '"address"' | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' | head -1)
 fi

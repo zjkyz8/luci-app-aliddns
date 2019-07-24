@@ -23,6 +23,11 @@ iface:value("",translate("Select WAN-IP Source"))
 iface:value("internet")
 iface:value("wan")
 
+protocol=e:option(ListValue,"protocol",translate("IP Protocol"),translate("Select IP Protocol to register"))
+protocol.value("",translate("Select IP Protocol"))
+protocol.value("ipv4")
+protocol.value("ipv6")
+
 iface.rmempty=false
 main=e:option(Value,"main_domain",translate("Main Domain"),translate("For example: test.github.com -> github.com"))
 main.rmempty=false

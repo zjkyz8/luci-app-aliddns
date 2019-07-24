@@ -22,6 +22,15 @@ msgstr "选择WAN-IP来源"
 msgid "Select the WAN-IP Source for AliDDNS, like wan/internet"
 msgstr "动态域名的IP来源，如wan/internet"
 
+msgid "IP protocol"
+msgstr "IP 协议"
+
+msgid "Select IP Protocol"
+msgstr "选择IP协议"
+
+msgid "Select IP Protocol to register"
+msgstr "要注册的IP协议，IPv4/IPv6"
+
 msgid "Main Domain"
 msgstr "主域名"
 
